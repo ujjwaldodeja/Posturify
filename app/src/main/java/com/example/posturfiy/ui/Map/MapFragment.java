@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -50,6 +52,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         binding = FragmentMapBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        ImageButton button = (ImageButton) root.findViewById(R.id.button);
+
+        button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                getLastLocation();
+            }
+        });
+
         SupportMapFragment supportMapFragment = (SupportMapFragment)
                 getChildFragmentManager().findFragmentById(R.id.map);
 
@@ -90,7 +104,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void getLastLocation() {
+    public void getLastLocation() {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
