@@ -1,4 +1,4 @@
-package com.example.posturfiy.ui.slideshow;
+package com.example.posturfiy.ui.statistics;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
