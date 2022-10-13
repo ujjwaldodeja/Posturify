@@ -23,7 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.posturfiy.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        getSupportFragmentManager().beginTransaction().add(R.id.map_container, new MapFragment()).commit();
+//        getSupportFragmentManager().beginTransaction().add(R.id.map_container, new MapFragment()).commit();
 
     }
 
@@ -74,16 +74,16 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-//    public static void putMarker(double latitude, double longitude, String name) {
-//        LatLng latLng = new LatLng(latitude, longitude);
-//        map.addMarker(new MarkerOptions().position(latLng).title(name));
-//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
-//    }
-//
-//    @Override
-//    public void onMapReady(@NonNull GoogleMap googleMap) {
-//        map = googleMap;
-//        putMarker(52.3676, 4.9041, "ams");
-//
-//    }
+    public static void putMarker(double latitude, double longitude, String name) {
+        LatLng latLng = new LatLng(latitude, longitude);
+        map.addMarker(new MarkerOptions().position(latLng).title(name));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        map = googleMap;
+        putMarker(52.3676, 4.9041, "ams");
+
+    }
 }
