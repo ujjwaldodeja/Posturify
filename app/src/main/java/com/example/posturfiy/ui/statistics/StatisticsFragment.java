@@ -1,4 +1,4 @@
-package com.example.posturfiy.ui.Map;
+package com.example.posturfiy.ui.statistics;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 
-public class MapFragment extends Fragment {
+public class StatisticsFragment extends Fragment {
+
 
 }
