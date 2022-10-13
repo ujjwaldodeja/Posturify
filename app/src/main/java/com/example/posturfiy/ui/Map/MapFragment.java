@@ -1,4 +1,4 @@
-package com.example.posturfiy.ui.gallery;
+package com.example.posturfiy.ui.Map;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.posturfiy.databinding.FragmentGalleryBinding;
 
-public class GalleryFragment extends Fragment {
+public class MapFragment extends Fragment {
 
     private FragmentGalleryBinding binding;
 
@@ -24,7 +24,7 @@ public class GalleryFragment extends Fragment {
         binding = FragmentGalleryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textGallery;
+        final TextView textView = binding.textMap;
         galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
