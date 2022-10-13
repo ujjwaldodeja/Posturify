@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 
+import com.example.posturfiy.ui.Map.MapFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -22,7 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.posturfiy.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -54,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        getSupportFragmentManager().beginTransaction().add(R.id.map_container, new MapFragment()).commit();
+
     }
 
     @Override
@@ -70,14 +74,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 || super.onSupportNavigateUp();
     }
 
-    public static void putMarker(double latitude, double longitude, String name) {
-        LatLng latLng = new LatLng(latitude, longitude);
-        map.addMarker(new MarkerOptions().position(latLng).title(name));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
-    }
-
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        map = googleMap;
-    }
+//    public static void putMarker(double latitude, double longitude, String name) {
+//        LatLng latLng = new LatLng(latitude, longitude);
+//        map.addMarker(new MarkerOptions().position(latLng).title(name));
+//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
+//    }
+//
+//    @Override
+//    public void onMapReady(@NonNull GoogleMap googleMap) {
+//        map = googleMap;
+//        putMarker(52.3676, 4.9041, "ams");
+//
+//    }
 }
