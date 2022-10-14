@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +20,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.posturfiy.R;
 import com.example.posturfiy.databinding.FragmentMapBinding;
+import com.google.android.gms.common.util.JsonUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,6 +37,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
@@ -43,6 +50,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationProviderClient;
     private static final int LOCATION_PERMISSION_CODE = 10001;
     public LocationRequest locationRequest;
+    private static final float ZOOM = 20.0f;
     //=============================================================================================
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -52,6 +60,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         binding = FragmentMapBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        Places.initialize(getActivity(), "@string/AIzaSyDfzZrXObmHuLxkagL7zlBi9AXC_R48or8");
+        SupportMapFragment supportMapFragment = (SupportMapFragment)
+                getChildFragmentManager().findFragmentById(R.id.map);
+
+        if (supportMapFragment != null) {
+            supportMapFragment.getMapAsync(this);
+        }
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(4000);
+        locationRequest.setFastestInterval(2000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         ImageButton button = (ImageButton) root.findViewById(R.id.button);
 
@@ -63,20 +83,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 getLastLocation();
             }
         });
-
-        SupportMapFragment supportMapFragment = (SupportMapFragment)
-                getChildFragmentManager().findFragmentById(R.id.map);
-
-        if (supportMapFragment != null) {
-            supportMapFragment.getMapAsync(this);
-        }
-        Places.initialize(getActivity(), "@string/AIzaSyB0ePjanhjgY1hMPP0Hdk6tuFNq9mC8vn8");
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        locationRequest = LocationRequest.create();
-        locationRequest.setInterval(4000);
-        locationRequest.setFastestInterval(2000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
         return root;
     }
 
@@ -89,7 +95,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public static void putMarker(double latitude, double longitude, String name) {
         LatLng latLng = new LatLng(latitude, longitude);
         map.addMarker(new MarkerOptions().position(latLng).title(name));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM));
     }
 
     @Override
@@ -98,9 +104,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
             getLastLocation();
-//            checkSettingsAndStartLocationUpdates();
         } else {
             askLocationPermission();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Permission granted
+                getLastLocation();
+            }
         }
     }
 
@@ -147,34 +163,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-
             @Override
             public void onMapClick(LatLng latLng) {
-
-                // Creating a marker
                 MarkerOptions markerOptions = new MarkerOptions();
-
-                // Setting the position for the marker
                 markerOptions.position(latLng);
-
-                // Setting the title for the marker.
-                // This will be displayed on taping the marker
                 markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-
-                // Clears the previously touched position
                 googleMap.clear();
-
-                // Animating to the touched position
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
-
-                // Placing a marker on the touched position
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM));
                 googleMap.addMarker(markerOptions);
+
+
             }
         });
     }

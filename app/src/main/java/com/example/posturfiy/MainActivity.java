@@ -23,11 +23,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.posturfiy.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    private static GoogleMap map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +55,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-//        getSupportFragmentManager().beginTransaction().add(R.id.map_container, new MapFragment()).commit();
-
     }
 
     @Override
@@ -72,18 +69,5 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
-
-    public static void putMarker(double latitude, double longitude, String name) {
-        LatLng latLng = new LatLng(latitude, longitude);
-        map.addMarker(new MarkerOptions().position(latLng).title(name));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
-    }
-
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        map = googleMap;
-        putMarker(52.3676, 4.9041, "ams");
-
     }
 }
