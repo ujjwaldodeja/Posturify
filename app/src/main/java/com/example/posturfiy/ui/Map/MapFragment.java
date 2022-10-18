@@ -1,6 +1,7 @@
 package com.example.posturfiy.ui.Map;
 
 import android.Manifest;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -20,12 +21,16 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.posturfiy.R;
 import com.example.posturfiy.databinding.FragmentMapBinding;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.util.JsonUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -51,16 +56,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_CODE = 10001;
     public LocationRequest locationRequest;
     private static final float ZOOM = 20.0f;
+//    LocationCallback locationCallback = new LocationCallback() {
+//        @Override
+//        public void onLocationResult(@NonNull LocationResult locationResult) {
+//            if (locationResult == null) {
+//                return;
+//            }
+//            for (Location location : locationResult.getLocations()) {
+//                Log.d(TAG, "onLocationResult: " + location.toString());
+//            }
+//        }
+//    };
     //=============================================================================================
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        GalleryViewModel mapViewModel =
-                new ViewModelProvider(this).get(GalleryViewModel.class);
 
         binding = FragmentMapBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        Places.initialize(getActivity(), "@string/AIzaSyDfzZrXObmHuLxkagL7zlBi9AXC_R48or8");
+
+        Places.initialize(getActivity(), "AIzaSyDfzZrXObmHuLxkagL7zlBi9AXC_R48or8");
+
         SupportMapFragment supportMapFragment = (SupportMapFragment)
                 getChildFragmentManager().findFragmentById(R.id.map);
 
@@ -68,10 +84,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             supportMapFragment.getMapAsync(this);
         }
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        locationRequest = LocationRequest.create();
-        locationRequest.setInterval(4000);
-        locationRequest.setFastestInterval(2000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//        locationRequest = LocationRequest.create();
+//        locationRequest.setInterval(4000);
+//        locationRequest.setFastestInterval(2000);
+//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+//        startLocationUpdates();
 
         ImageButton button = (ImageButton) root.findViewById(R.id.button);
 
@@ -104,21 +122,55 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
             getLastLocation();
+//            checkSettingsAndStartLocationUpdates();
         } else {
             askLocationPermission();
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //Permission granted
-                getLastLocation();
-            }
-        }
-    }
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        stopLocationUpdates();
+//    }
+//
+//    private void checkSettingsAndStartLocationUpdates() {
+//        LocationSettingsRequest request = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest).build();
+//        SettingsClient client = LocationServices.getSettingsClient(getActivity());
+//
+//        Task<LocationSettingsResponse> locationSettingsResponseTask = client.checkLocationSettings(request);
+//        locationSettingsResponseTask.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
+//            @Override
+//            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+//                startLocationUpdates();
+//            }
+//        });
+//
+//        locationSettingsResponseTask.addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                if (e instanceof ResolvableApiException) {
+//                    ResolvableApiException apiException = (ResolvableApiException) e;
+//                    try {
+//                        apiException.startResolutionForResult(getActivity(), 1001);
+//                    } catch (IntentSender.SendIntentException ex) {
+//                        ex.printStackTrace();
+//                    }
+//                }
+//            }
+//        });
+//    }
+//
+//    private void startLocationUpdates() {
+//        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            return;
+//        }
+//        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+//    }
+//
+//    private void stopLocationUpdates() {
+//        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+//    }
 
     public void getLastLocation() {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -145,6 +197,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Log.e(TAG, "onFailure: " + e.getLocalizedMessage());
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Permission granted
+                getLastLocation();
+//                checkSettingsAndStartLocationUpdates();
+            } else {
+                //Permission not granted
+            }
+        }
     }
 
     private void askLocationPermission() {
