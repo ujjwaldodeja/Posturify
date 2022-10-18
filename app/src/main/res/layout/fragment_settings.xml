@@ -4,33 +4,31 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context=".ui.settings.SettingsActivity">
+    tools:context=".ui.settings.SettingsFragment">
 
-    <androidx.appcompat.widget.Toolbar
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?actionBarTheme"
-        android:theme="?actionBarTheme"
         android:background="@color/darkGray">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="PLACES:"
-            android:textSize="30dp"
+            android:textSize="20sp"
             android:textColor="@color/white"
             android:layout_gravity="center"
             android:textStyle="bold"/>
 
         <Button
+            android:id="@+id/addNewPlace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ADD PLACE:"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:layout_gravity="end"
-            android:onClick="newPlace"/>
-    </androidx.appcompat.widget.Toolbar>
+            android:layout_gravity="end"/>
+    </FrameLayout>
     
     <ListView
         android:id="@+id/placeListView"

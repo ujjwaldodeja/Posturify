@@ -6,32 +6,45 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.posturfiy.R;
 import com.example.posturfiy.databinding.FragmentHomeBinding;
+import com.example.posturfiy.databinding.FragmentSettingsBinding;
 import com.example.posturfiy.ui.database.Place;
 import com.example.posturfiy.ui.database.PlaceAdapter;
 import com.example.posturfiy.ui.database.SQLiteManager;
 import com.example.posturfiy.ui.home.HomeViewModel;
 
-public class SettingsActivity extends AppCompatActivity {
-    private FragmentHomeBinding binding;
+import java.util.List;
+
+public class SettingsFragment extends Fragment {
+    private FragmentSettingsBinding binding;
     private ListView placeListView;
-    private View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        binding = FragmentSettingsBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        root = binding.getRoot();
-        initWidgets();
+        Button button = (Button) root.findViewById(R.id.addNewPlace);
+        button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(getActivity(), SettingsFragmentEdit.class);
+                startActivity(intent);
+            }
+        });
+
+        initWidgets(root);
         setPlaceAdapter();
         loadFromDBToMemory();
         setOnClickListener();
@@ -44,7 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Place selectedPlace = (Place) placeListView.getItemAtPosition(position);
-                Intent editPlaceIntent = new Intent(getApplicationContext(), SettingsActivityEdit.class);
+                Intent editPlaceIntent = new Intent(getActivity(), SettingsFragmentEdit.class);
                 editPlaceIntent.putExtra(Place.PLACE_EDIT_EXTRA, selectedPlace.getId());
                 startActivity(editPlaceIntent);
             }
@@ -52,22 +65,22 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void loadFromDBToMemory() {
-        SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(getApplicationContext());
+        SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(getActivity());
         sqLiteManager.populateRecordListArray();
     }
 
-    private void initWidgets() {
-        placeListView = root.findViewById(R.id.placeListView);
+    private void initWidgets(View view) {
+        placeListView = (ListView) view.findViewById(R.id.placeListView);
     }
 
     private void setPlaceAdapter() {
-        PlaceAdapter placeAdapter = new PlaceAdapter(getApplicationContext(), Place.arrayList);
+        PlaceAdapter placeAdapter = new PlaceAdapter(getActivity(), Place.nonDeletedPlaces());
         placeListView.setAdapter(placeAdapter);
     }
 
-    public void newPlace(View view) {
-        Intent intent = new Intent(this, SettingsActivityEdit.class);
-        startActivity(intent);
+    @Override
+    public void onResume() {
+        super.onResume();
+        setPlaceAdapter();
     }
-
 }

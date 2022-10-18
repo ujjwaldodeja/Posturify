@@ -10,14 +10,23 @@ public class Place {
 
     private int id;
     private String name;
+    private String coordinates;
+
+    private Date deleted;
+
+    public Place(int id, String name, String coordinates, Date deleted) {
+        this.id = id;
+        this.name = name;
+        this.coordinates = coordinates;
+        this.deleted = deleted;
+    }
 
     public Place(int id, String name, String coordinates) {
         this.id = id;
         this.name = name;
         this.coordinates = coordinates;
+        deleted = null;
     }
-
-    private String coordinates;
 
     public static Place getPlaceForId(int passedPlaceId) {
         for (Place place : arrayList) {
@@ -26,6 +35,25 @@ public class Place {
             }
         }
         return null;
+    }
+
+    public static ArrayList<Place> nonDeletedPlaces() {
+        ArrayList<Place> nonDeleted = new ArrayList<>();
+
+        for (Place p : arrayList) {
+            if (p.getDeleted() == null) {
+                nonDeleted.add(p);
+            }
+        }
+        return nonDeleted;
+    }
+
+    public Date getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Date deleted) {
+        this.deleted = deleted;
     }
 
     public int getId() {
