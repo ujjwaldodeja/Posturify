@@ -6,7 +6,6 @@ public class DatabaseConstants {
     public static final int DATABASE_VERSION = 1;
     public static final String TABLE_NAME_PLACE = "Place";
     public static final String TABLE_NAME_RECORD = "Record";
-    public static final String COUNTER = "Counter";
 
     public static final String ID_FIELD_PLACE = "pid";
     public static final String NAME_FIELD_PLACE = "name";
