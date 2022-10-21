@@ -17,10 +17,17 @@
         android:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/button"
+            android:id="@+id/button_cur_loc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_cur_loc"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/button_all_locs_from_db"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_locs_from_db"/>
 
     </FrameLayout>
 

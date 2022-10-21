@@ -7,6 +7,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.posturfiy.ui.database.place.Place;
+import com.example.posturfiy.ui.database.record.Record;
+
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,21 +22,11 @@ public class SQLiteManager extends SQLiteOpenHelper {
 
     private static SQLiteManager sqLiteManagers;
 
-    private static final String DATABASE_NAME = "PosturifyDB";
-    private static final int DATABASE_VERSION = 1;
-    private static final String TABLE_NAME = "Place";
-    private static final String COUNTER = "COUNTER";
-
-    private static final String ID_FIELD = "id";
-    private static final String NAME_FIELD = "name";
-    private static final String COORDS_FILED = "coordinates";
-    private static final String DELETED_FILED = "deleted";
-
     @SuppressLint("SimpleDateFormat")
     private static final DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 
     public SQLiteManager(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, DatabaseConstants.DATABASE_NAME, null, DatabaseConstants.DATABASE_VERSION);
     }
 
     public static SQLiteManager instanceOfDatabase(Context context) {
@@ -40,42 +36,47 @@ public class SQLiteManager extends SQLiteOpenHelper {
         return sqLiteManagers;
     }
 
+    public void dropTableIfExists() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS '" + DatabaseConstants.CREATE_PLACE + "'");
+        db.execSQL("DROP TABLE IF EXISTS '" + DatabaseConstants.CREATE_RECORD + "'");
+    }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        StringBuilder sql;
-        sql = new StringBuilder()
-                .append("CREATE TABLE ")
-                .append(TABLE_NAME)
-                .append("(")
-                .append(COUNTER)
-                .append(" INTEGER PRIMARY KEY AUTOINCREMENT, ")
-                .append(ID_FIELD)
-                .append(" INT, ")
-                .append(NAME_FIELD)
-                .append(" TEXT, ")
-                .append(COORDS_FILED)
-                .append(" TEXT, ")
-                .append(DELETED_FILED)
-                .append(" TEXT)");
-        sqLiteDatabase.execSQL(sql.toString());
+
+        sqLiteDatabase.execSQL(DatabaseConstants.CREATE_PLACE);
+        sqLiteDatabase.execSQL(DatabaseConstants.CREATE_RECORD);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+        dropTableIfExists();
     }
 
     public void addPlaceToDatabase(Place place) {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ID_FIELD, place.getId());
-        contentValues.put(NAME_FIELD, place.getName());
-        contentValues.put(COORDS_FILED, place.getCoordinates());
-        contentValues.put(DELETED_FILED, getStringFromDate(place.getDeleted()));
+        contentValues.put(DatabaseConstants.ID_FIELD_PLACE, place.getId());
+        contentValues.put(DatabaseConstants.NAME_FIELD_PLACE, place.getName());
+        contentValues.put(DatabaseConstants.LATITUDE_FIELD_PLACE, place.getLatitude());
+        contentValues.put(DatabaseConstants.LONGITUDE_FIELD_PLACE, place.getLongitude());
+        contentValues.put(DatabaseConstants.DELETED_FIELD_PLACE, getStringFromDate(place.getDeleted()));
 
-        sqLiteDatabase.insert(TABLE_NAME, null, contentValues);
+        sqLiteDatabase.insert(DatabaseConstants.TABLE_NAME_PLACE, null, contentValues);
+    }
+
+    public void addRecordToDatabase(Record record) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseConstants.ID_FIELD_RECORD, record.getId());
+        contentValues.put(DatabaseConstants.FOREIGN_ID_FIELD_RECORD, record.getForeign_id());
+        contentValues.put(DatabaseConstants.RESULT_FIELD_RECORD, record.getResult());
+        contentValues.put(DatabaseConstants.TIMESTAMP_FIELD_RECORD, record.getTimestamp().toString());
+
+        sqLiteDatabase.insert(DatabaseConstants.TABLE_NAME_RECORD, null, contentValues);
     }
 
     private String getStringFromDate(Date date) {
@@ -96,15 +97,33 @@ public class SQLiteManager extends SQLiteOpenHelper {
 
     public void populateRecordListArray() {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        try (Cursor result = sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME, null)) {
+        try (Cursor result = sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseConstants.TABLE_NAME_RECORD, null)) {
             if (result.getCount() != 0) {
                 while (result.moveToNext()) {
-                    int id = result.getInt(1);
-                    String name = result.getString(2);
-                    String coords = result.getString(3);
+                    int id = result.getInt(0);
+                    int foreign = result.getInt(1);
+                    String res = result.getString(2);
+                    String timestampStr = result.getString(3);
+                    Timestamp timestamp = new Timestamp(getDateFromString(timestampStr).getTime());
+                    Record newRecord = new Record(id, foreign, res, timestamp);
+                    Record.recordsList.add(newRecord);
+                }
+            }
+        }
+    }
+
+    public void populatePlaceListArray() {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        try (Cursor result = sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseConstants.TABLE_NAME_PLACE, null)) {
+            if (result.getCount() != 0) {
+                while (result.moveToNext()) {
+                    int id = result.getInt(0);
+                    String name = result.getString(1);
+                    String latitude = result.getString(2);
+                    String longitude = result.getString(3);
                     String deletedString = result.getString(4);
                     Date date = getDateFromString(deletedString);
-                    Place place = new Place(id, name, coords, date);
+                    Place place = new Place(id, name, latitude, longitude, date);
                     Place.arrayList.add(place);
                 }
             }
@@ -115,11 +134,12 @@ public class SQLiteManager extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ID_FIELD, place.getId());
-        contentValues.put(NAME_FIELD, place.getName());
-        contentValues.put(COORDS_FILED, place.getCoordinates());
-        contentValues.put(DELETED_FILED, getStringFromDate(place.getDeleted()));
+        contentValues.put(DatabaseConstants.ID_FIELD_PLACE, place.getId());
+        contentValues.put(DatabaseConstants.NAME_FIELD_PLACE, place.getName());
+        contentValues.put(DatabaseConstants.LATITUDE_FIELD_PLACE, place.getLatitude());
+        contentValues.put(DatabaseConstants.LONGITUDE_FIELD_PLACE, place.getLongitude());
+        contentValues.put(DatabaseConstants.DELETED_FIELD_PLACE, getStringFromDate(place.getDeleted()));
 
-        sqLiteDatabase.update(TABLE_NAME, contentValues, ID_FIELD + " =? ", new String[]{String.valueOf(place.getId())});
+        sqLiteDatabase.update(DatabaseConstants.TABLE_NAME_PLACE, contentValues, DatabaseConstants.ID_FIELD_PLACE + " =? ", new String[]{String.valueOf(place.getId())});
     }
 }

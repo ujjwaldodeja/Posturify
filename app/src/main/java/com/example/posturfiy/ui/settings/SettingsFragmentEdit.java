@@ -2,26 +2,22 @@ package com.example.posturfiy.ui.settings;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.posturfiy.R;
-import com.example.posturfiy.databinding.ActivityMainBinding;
-import com.example.posturfiy.databinding.FragmentHomeBinding;
-import com.example.posturfiy.databinding.FragmentSettingsEditBinding;
-import com.example.posturfiy.ui.database.Place;
+import com.example.posturfiy.ui.Map.MapController;
+import com.example.posturfiy.ui.database.place.Place;
 import com.example.posturfiy.ui.database.SQLiteManager;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Date;
+import java.util.Map;
 
 public class SettingsFragmentEdit extends AppCompatActivity {
 
@@ -47,17 +43,26 @@ public class SettingsFragmentEdit extends AppCompatActivity {
                 SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(getApplicationContext());
 
                 String name = String.valueOf(nameEditText.getText());
-                String coords = String.valueOf(coordinatesEditText.getText());
+                String address = String.valueOf(coordinatesEditText.getText());
+                String latitude = "";
+                String longitude = "";
+
+                LatLng place = MapController.getLocationFromAddress(getApplicationContext(), address);
+                if (place != null) {
+                    latitude = place.latitude + "";
+                    longitude = place.longitude + "";
+                }
 
                 if (selectedPlace == null) {
                     int id = Place.arrayList.size();
-                    Place newPlace = new Place(id, name, coords);
+                    Place newPlace = new Place(id, name, latitude, longitude);
                     Place.arrayList.add(newPlace);
                     sqLiteManager.addPlaceToDatabase(newPlace);
                     finish();
                 } else {
                     selectedPlace.setName(name);
-                    selectedPlace.setCoordinates(coords);
+                    selectedPlace.setLatitude(latitude);
+                    selectedPlace.setLongitude(longitude);
                     sqLiteManager.updatePlaceInDB(selectedPlace);
                 }
             }
@@ -105,7 +110,7 @@ public class SettingsFragmentEdit extends AppCompatActivity {
 //                    getActivity().finish();
 //                } else {
 //                    selectedPlace.setName(name);
-//                    selectedPlace.setCoordinates(coords);
+//                    selectedPlace.setLatitude(coords);
 //                    sqLiteManager.updatePlaceInDB(selectedPlace);
 //                }
 //            }
@@ -123,7 +128,12 @@ public class SettingsFragmentEdit extends AppCompatActivity {
 
         if (selectedPlace != null) {
             nameEditText.setText(selectedPlace.getName());
-            coordinatesEditText.setText(selectedPlace.getCoordinates());
+            String address = MapController.getStringAddressFromLatLon(
+                    getApplicationContext(),
+                    selectedPlace.getLatitude(),
+                    selectedPlace.getLongitude());
+
+            coordinatesEditText.setText(address);
         } else {
             deleteButton.setVisibility(View.INVISIBLE);
         }

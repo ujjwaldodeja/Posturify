@@ -1,4 +1,4 @@
-package com.example.posturfiy.ui.database;
+package com.example.posturfiy.ui.database.place;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,21 +10,23 @@ public class Place {
 
     private int id;
     private String name;
-    private String coordinates;
-
+    private String latitude;
+    private String longitude;
     private Date deleted;
 
-    public Place(int id, String name, String coordinates, Date deleted) {
+    public Place(int id, String name, String latitude, String longitude, Date deleted) {
         this.id = id;
         this.name = name;
-        this.coordinates = coordinates;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.deleted = deleted;
     }
 
-    public Place(int id, String name, String coordinates) {
+    public Place(int id, String name, String latitude, String longitude) {
         this.id = id;
         this.name = name;
-        this.coordinates = coordinates;
+        this.latitude = latitude;
+        this.longitude = longitude;
         deleted = null;
     }
 
@@ -72,11 +74,19 @@ public class Place {
         this.name = name;
     }
 
-    public String getCoordinates() {
-        return coordinates;
+    public String getLatitude() {
+        return latitude;
     }
 
-    public void setCoordinates(String coordinates) {
-        this.coordinates = coordinates;
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 }

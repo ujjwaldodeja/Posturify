@@ -1,36 +1,26 @@
 package com.example.posturfiy.ui.Map;
 
 import android.Manifest;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.posturfiy.R;
 import com.example.posturfiy.databinding.FragmentMapBinding;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.common.util.JsonUtils;
+import com.example.posturfiy.ui.database.place.Place;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -56,6 +46,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_CODE = 10001;
     public LocationRequest locationRequest;
     private static final float ZOOM = 20.0f;
+    private static List<MarkerOptions> markersList = new ArrayList<>();
 //    LocationCallback locationCallback = new LocationCallback() {
 //        @Override
 //        public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -91,9 +82,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 //        startLocationUpdates();
 
-        ImageButton button = (ImageButton) root.findViewById(R.id.button);
-
-        button.setOnClickListener(new View.OnClickListener()
+        ImageButton currentLocButton = (ImageButton) root.findViewById(R.id.button_cur_loc);
+        currentLocButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -101,6 +91,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 getLastLocation();
             }
         });
+
+        ImageButton allLocsFromDB = (ImageButton) root.findViewById(R.id.button_all_locs_from_db);
+        allLocsFromDB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Place.arrayList.size() != 0) {
+                    for (Place place : Place.nonDeletedPlaces()) {
+                        String name = place.getName();
+                        try {
+                            double lat = Double.parseDouble(place.getLatitude());
+                            double lon = Double.parseDouble(place.getLongitude());
+                            MapController.putMarker(lat, lon, name, map);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+
         return root;
     }
 
@@ -108,12 +118,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    public static void putMarker(double latitude, double longitude, String name) {
-        LatLng latLng = new LatLng(latitude, longitude);
-        map.addMarker(new MarkerOptions().position(latLng).title(name));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM));
     }
 
     @Override
@@ -184,7 +188,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     Log.d(TAG, "onSuccess: " + location.toString());
                     Log.d(TAG, "onSuccess: " + location.getLatitude());
                     Log.d(TAG, "onSuccess: " + location.getLongitude());
-                    putMarker(location.getLatitude(), location.getLongitude(), "My Current Location");
+                    MapController.putMarker(location.getLatitude(), location.getLongitude(), "My Current Location", map);
                 } else {
                     Log.d(TAG, "onSuccess: location was null...");
                 }
@@ -232,14 +236,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-                googleMap.clear();
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM));
-                googleMap.addMarker(markerOptions);
-
-
+                if (markersList.size() == 0) {
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
+                    markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+                    map.clear();
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM));
+                    map.addMarker(markerOptions);
+                    markersList.add(markerOptions);
+                } else {
+                    markersList.clear();
+                    map.clear();
+                }
             }
         });
     }

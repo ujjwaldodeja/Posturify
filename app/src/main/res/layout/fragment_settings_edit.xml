@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Location coordinates:"
+        android:text="Address:"
         android:textColor="@color/darkGray"
         android:textSize="20sp"
         android:layout_marginTop="20dp"
@@ -67,12 +67,13 @@
     <EditText
         android:id="@+id/coordinatesEditText"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_gravity="center"
         android:textColor="@color/darkGray"
+        android:hint="Post Code, Address, City, Country"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:maxLines="1"
+        android:maxLines="4"
         android:layout_marginTop="20dp"/>
 
     <androidx.appcompat.widget.AppCompatButton

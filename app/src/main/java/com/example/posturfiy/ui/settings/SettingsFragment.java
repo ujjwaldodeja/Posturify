@@ -10,19 +10,13 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.posturfiy.R;
-import com.example.posturfiy.databinding.FragmentHomeBinding;
 import com.example.posturfiy.databinding.FragmentSettingsBinding;
-import com.example.posturfiy.ui.database.Place;
-import com.example.posturfiy.ui.database.PlaceAdapter;
+import com.example.posturfiy.ui.database.place.Place;
+import com.example.posturfiy.ui.database.place.PlaceAdapter;
 import com.example.posturfiy.ui.database.SQLiteManager;
-import com.example.posturfiy.ui.home.HomeViewModel;
-
-import java.util.List;
 
 public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
@@ -66,7 +60,7 @@ public class SettingsFragment extends Fragment {
 
     private void loadFromDBToMemory() {
         SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(getActivity());
-        sqLiteManager.populateRecordListArray();
+        sqLiteManager.populatePlaceListArray();
     }
 
     private void initWidgets(View view) {

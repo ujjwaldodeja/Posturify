@@ -1,4 +1,4 @@
-package com.example.posturfiy.ui.database;
+package com.example.posturfiy.ui.database.place;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.posturfiy.R;
+import com.example.posturfiy.ui.Map.MapController;
+import com.example.posturfiy.ui.Map.MapFragment;
 
 import java.util.List;
 
@@ -32,7 +34,8 @@ public class PlaceAdapter extends ArrayAdapter<Place> {
         TextView coordinates = convertView.findViewById(R.id.cellCoordinates);
 
         name.setText(place.getName());
-        coordinates.setText(place.getCoordinates());
+        String address = MapController.getStringAddressFromLatLon(getContext(), place.getLatitude(), place.getLongitude());
+        coordinates.setText(address);
         return convertView;
     }
 }
