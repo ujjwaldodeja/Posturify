@@ -105,7 +105,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
                 if (Place.arrayList.size() != 0) {
-                    for (Place place : Place.nonDeletedPlaces()) {
+                    for (Place place : Place.arrayList) {
                         String name = place.getName();
                         try {
                             double lat = Double.parseDouble(place.getLatitude());

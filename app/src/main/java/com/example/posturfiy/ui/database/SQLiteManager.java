@@ -62,7 +62,6 @@ public class SQLiteManager extends SQLiteOpenHelper {
         contentValues.put(DatabaseConstants.NAME_FIELD_PLACE, place.getName());
         contentValues.put(DatabaseConstants.LATITUDE_FIELD_PLACE, place.getLatitude());
         contentValues.put(DatabaseConstants.LONGITUDE_FIELD_PLACE, place.getLongitude());
-        contentValues.put(DatabaseConstants.DELETED_FIELD_PLACE, getStringFromDate(place.getDeleted()));
 
         sqLiteDatabase.insert(DatabaseConstants.TABLE_NAME_PLACE, null, contentValues);
     }
@@ -117,14 +116,14 @@ public class SQLiteManager extends SQLiteOpenHelper {
         try (Cursor result = sqLiteDatabase.rawQuery("SELECT * FROM " + DatabaseConstants.TABLE_NAME_PLACE, null)) {
             if (result.getCount() != 0) {
                 while (result.moveToNext()) {
-                    int id = result.getInt(0);
-                    String name = result.getString(1);
-                    String latitude = result.getString(2);
-                    String longitude = result.getString(3);
-                    String deletedString = result.getString(4);
-                    Date date = getDateFromString(deletedString);
-                    Place place = new Place(id, name, latitude, longitude, date);
-                    Place.arrayList.add(place);
+                    if (!Place.ifHasDuplicates(result.getInt(0))) {
+                        int id = result.getInt(0);
+                        String name = result.getString(1);
+                        String latitude = result.getString(2);
+                        String longitude = result.getString(3);
+                        Place place = new Place(id, name, latitude, longitude);
+                        Place.arrayList.add(place);
+                    }
                 }
             }
         }
@@ -138,8 +137,12 @@ public class SQLiteManager extends SQLiteOpenHelper {
         contentValues.put(DatabaseConstants.NAME_FIELD_PLACE, place.getName());
         contentValues.put(DatabaseConstants.LATITUDE_FIELD_PLACE, place.getLatitude());
         contentValues.put(DatabaseConstants.LONGITUDE_FIELD_PLACE, place.getLongitude());
-        contentValues.put(DatabaseConstants.DELETED_FIELD_PLACE, getStringFromDate(place.getDeleted()));
 
         sqLiteDatabase.update(DatabaseConstants.TABLE_NAME_PLACE, contentValues, DatabaseConstants.ID_FIELD_PLACE + " =? ", new String[]{String.valueOf(place.getId())});
+    }
+
+    public void deletePlaceFromDB(int id) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        sqLiteDatabase.execSQL(DatabaseConstants.DELETE_PLACE + id);
     }
 }

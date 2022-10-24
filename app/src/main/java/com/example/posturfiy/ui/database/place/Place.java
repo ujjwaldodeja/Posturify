@@ -12,22 +12,12 @@ public class Place {
     private String name;
     private String latitude;
     private String longitude;
-    private Date deleted;
-
-    public Place(int id, String name, String latitude, String longitude, Date deleted) {
-        this.id = id;
-        this.name = name;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.deleted = deleted;
-    }
 
     public Place(int id, String name, String latitude, String longitude) {
         this.id = id;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
-        deleted = null;
     }
 
     public static Place getPlaceForId(int passedPlaceId) {
@@ -39,23 +29,17 @@ public class Place {
         return null;
     }
 
-    public static ArrayList<Place> nonDeletedPlaces() {
-        ArrayList<Place> nonDeleted = new ArrayList<>();
-
+    public static boolean ifHasDuplicates(int id) {
         for (Place p : arrayList) {
-            if (p.getDeleted() == null) {
-                nonDeleted.add(p);
+            if (p.getId() == id) {
+                return true;
             }
         }
-        return nonDeleted;
+        return false;
     }
 
-    public Date getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Date deleted) {
-        this.deleted = deleted;
+    public static void removeById(int id) {
+        arrayList.removeIf(p -> p.getId() == id);
     }
 
     public int getId() {

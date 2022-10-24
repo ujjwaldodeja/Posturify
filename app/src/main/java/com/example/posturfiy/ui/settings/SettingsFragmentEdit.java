@@ -8,6 +8,7 @@ import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.example.posturfiy.R;
 import com.example.posturfiy.ui.Map.MapController;
@@ -73,9 +74,9 @@ public class SettingsFragmentEdit extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                selectedPlace.setDeleted(new Date());
                 SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(getApplicationContext());
-                sqLiteManager.updatePlaceInDB(selectedPlace);
+                sqLiteManager.deletePlaceFromDB(selectedPlace.getId());
+                Place.removeById(selectedPlace.getId());
                 finish();
             }
         });

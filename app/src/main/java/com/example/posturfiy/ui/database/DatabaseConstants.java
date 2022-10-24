@@ -23,8 +23,7 @@ public class DatabaseConstants {
             + ID_FIELD_PLACE + " INTEGER PRIMARY KEY AUTOINCREMENT,  "
             + NAME_FIELD_PLACE + " TEXT, "
             + LATITUDE_FIELD_PLACE + " TEXT, "
-            + LONGITUDE_FIELD_PLACE + " TEXT, "
-            + DELETED_FIELD_PLACE + " TEXT)";
+            + LONGITUDE_FIELD_PLACE + " TEXT)";
 
     public static final String CREATE_RECORD = "CREATE TABLE "
             + TABLE_NAME_RECORD + "("
@@ -34,6 +33,9 @@ public class DatabaseConstants {
             + TIMESTAMP_FIELD_RECORD + " TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
             + "FOREIGN KEY(" + FOREIGN_ID_FIELD_RECORD + ") REFERENCES "
             + TABLE_NAME_RECORD + "(" + ID_FIELD_PLACE + "))";
+
+    public static final String DELETE_PLACE = "DELETE FROM "
+            + TABLE_NAME_PLACE + " WHERE pid = ";
 
 
 }

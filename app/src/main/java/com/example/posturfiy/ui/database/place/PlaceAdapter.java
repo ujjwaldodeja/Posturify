@@ -38,4 +38,8 @@ public class PlaceAdapter extends ArrayAdapter<Place> {
         coordinates.setText(address);
         return convertView;
     }
+
+    public void remove(int pos) {
+
+    }
 }

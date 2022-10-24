@@ -43,6 +43,12 @@ public class SettingsFragment extends Fragment {
         loadFromDBToMemory();
         setOnClickListener();
 
+        System.out.println("======================");
+        Place.arrayList.forEach(e -> {
+            System.out.println(e.getId() + ", " + e.getName() + ", " + e.getLatitude() + ", " + e.getLongitude() + "\n");
+        });
+        System.out.println("======================");
+
         return root;
     }
 
@@ -68,7 +74,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void setPlaceAdapter() {
-        PlaceAdapter placeAdapter = new PlaceAdapter(getActivity(), Place.nonDeletedPlaces());
+        PlaceAdapter placeAdapter = new PlaceAdapter(getActivity(), Place.arrayList);
         placeListView.setAdapter(placeAdapter);
     }
 
