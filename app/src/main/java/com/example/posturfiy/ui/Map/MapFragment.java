@@ -1,6 +1,9 @@
 package com.example.posturfiy.ui.Map;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -10,7 +13,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -53,26 +59,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationProviderClient;
     private static final int LOCATION_PERMISSION_CODE = 10001;
     public LocationRequest locationRequest;
-    private static final float ZOOM = 20.0f;
+    private static final float ZOOM = 25.0f;
     private static List<MarkerOptions> markersList = new ArrayList<>();
-//    LocationCallback locationCallback = new LocationCallback() {
-//        @Override
-//        public void onLocationResult(@NonNull LocationResult locationResult) {
-//            if (locationResult == null) {
-//                return;
-//            }
-//            for (Location location : locationResult.getLocations()) {
-//                Log.d(TAG, "onLocationResult: " + location.toString());
-//            }
-//        }
-//    };
+    private View root;
+    private EditText name;
+    private AlertDialog alertDialog;
+    private View dialogView;
+    LocationCallback locationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(@NonNull LocationResult locationResult) {
+            if (locationResult == null) {
+                return;
+            }
+            for (Location location : locationResult.getLocations()) {
+                Log.d(TAG, "onLocationResult: " + location.toString());
+            }
+        }
+    };
     //=============================================================================================
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentMapBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        root = binding.getRoot();
 
         Places.initialize(getActivity(), "AIzaSyDfzZrXObmHuLxkagL7zlBi9AXC_R48or8");
 
@@ -83,12 +93,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             supportMapFragment.getMapAsync(this);
         }
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-//        locationRequest = LocationRequest.create();
-//        locationRequest.setInterval(4000);
-//        locationRequest.setFastestInterval(2000);
-//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(4000);
+        locationRequest.setFastestInterval(2000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-//        startLocationUpdates();
+        startLocationUpdates();
 
         ImageButton currentLocButton = (ImageButton) root.findViewById(R.id.button_cur_loc);
         currentLocButton.setOnClickListener(new View.OnClickListener()
@@ -119,6 +129,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        LayoutInflater inflater1 = getActivity().getLayoutInflater();
+        dialogView = inflater1.inflate(R.layout.edit_text_dialog, null);
+        name = (EditText) dialogView.findViewById(R.id.nameOnMapDialog);
+
         return root;
     }
 
@@ -133,56 +147,56 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onStart();
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
-            getLastLocation();
-//            checkSettingsAndStartLocationUpdates();
+//            getLastLocation();
+            checkSettingsAndStartLocationUpdates();
         } else {
             askLocationPermission();
         }
     }
 
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        stopLocationUpdates();
-//    }
-//
-//    private void checkSettingsAndStartLocationUpdates() {
-//        LocationSettingsRequest request = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest).build();
-//        SettingsClient client = LocationServices.getSettingsClient(getActivity());
-//
-//        Task<LocationSettingsResponse> locationSettingsResponseTask = client.checkLocationSettings(request);
-//        locationSettingsResponseTask.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
-//            @Override
-//            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-//                startLocationUpdates();
-//            }
-//        });
-//
-//        locationSettingsResponseTask.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                if (e instanceof ResolvableApiException) {
-//                    ResolvableApiException apiException = (ResolvableApiException) e;
-//                    try {
-//                        apiException.startResolutionForResult(getActivity(), 1001);
-//                    } catch (IntentSender.SendIntentException ex) {
-//                        ex.printStackTrace();
-//                    }
-//                }
-//            }
-//        });
-//    }
-//
-//    private void startLocationUpdates() {
-//        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            return;
-//        }
-//        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-//    }
-//
-//    private void stopLocationUpdates() {
-//        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-//    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopLocationUpdates();
+    }
+
+    private void checkSettingsAndStartLocationUpdates() {
+        LocationSettingsRequest request = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest).build();
+        SettingsClient client = LocationServices.getSettingsClient(getActivity());
+
+        Task<LocationSettingsResponse> locationSettingsResponseTask = client.checkLocationSettings(request);
+        locationSettingsResponseTask.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                startLocationUpdates();
+            }
+        });
+
+        locationSettingsResponseTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (e instanceof ResolvableApiException) {
+                    ResolvableApiException apiException = (ResolvableApiException) e;
+                    try {
+                        apiException.startResolutionForResult(getActivity(), 1001);
+                    } catch (IntentSender.SendIntentException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
+    private void stopLocationUpdates() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    }
 
     public void getLastLocation() {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -217,8 +231,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (requestCode == LOCATION_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //Permission granted
-                getLastLocation();
-//                checkSettingsAndStartLocationUpdates();
+//                getLastLocation();
+                checkSettingsAndStartLocationUpdates();
             } else {
                 //Permission not granted
             }
@@ -241,6 +255,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
+        Button saveOnMap = (Button) root.findViewById(R.id.save_on_map_button);
+        onMapClick(saveOnMap);
+    }
+
+    private void onMapClick(Button saveOnMap) {
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
@@ -252,10 +271,57 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM));
                     map.addMarker(markerOptions);
                     markersList.add(markerOptions);
+                    dialogWindow(saveOnMap, latLng);
                 } else {
+                    saveOnMap.setVisibility(View.INVISIBLE);
                     markersList.clear();
                     map.clear();
                 }
+            }
+        });
+    }
+
+    private void dialogWindow(Button saveOnMap, LatLng latLng) {
+        saveOnMap.setVisibility(View.VISIBLE);
+        saveOnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog = new AlertDialog
+                        .Builder(getContext())
+                        .setView(dialogView)
+                        .setTitle("Would you like to save this place?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (name != null) {
+                                    String nameStr = name.getText().toString();
+                                    Place newPlace = new Place(Place.arrayList.size(),
+                                            nameStr,
+                                            latLng.latitude + "",
+                                            latLng.longitude + "");
+                                    Place.arrayList.add(newPlace);
+                                    AlertDialog dialog = new AlertDialog
+                                            .Builder(getContext())
+                                            .setTitle("Place has been successfully saved!")
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    Log.d("MapFragment", "The place has been saved.");
+                                                }
+                                            })
+                                            .create();
+                                    dialog.show();
+                                }
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Log.d("MapFragment", "The negative button was clicked.");
+                            }
+                        })
+                        .create();
+                alertDialog.show();
             }
         });
     }
