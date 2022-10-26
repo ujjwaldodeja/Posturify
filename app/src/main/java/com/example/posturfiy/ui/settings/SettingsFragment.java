@@ -63,7 +63,7 @@ public class SettingsFragment extends Fragment {
             }
         });
     }
-
+//jhsjcbdjcbejcbejcbjebvjbvj
     private void loadFromDBToMemory() {
         SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(getActivity());
         sqLiteManager.populatePlaceListArray();
