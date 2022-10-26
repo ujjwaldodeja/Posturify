@@ -26,7 +26,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.posturfiy.MainActivity;
 import com.example.posturfiy.R;
 import com.example.posturfiy.databinding.FragmentHomeBinding;
-import com.google.common.util.concurrent.ListenableFuture;
+
 
 import java.util.concurrent.ExecutionException;
 
@@ -49,8 +49,8 @@ public class HomeFragment extends Fragment {
                 activity.takePhoto();
             }
         });
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+//        final TextView textView = binding.textHome;
+//        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
 
 
