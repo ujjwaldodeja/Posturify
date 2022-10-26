@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
 }
+
 android {
     compileSdk 32
 
@@ -34,8 +35,6 @@ android {
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.6.1'
-    implementation 'com.google.guava:31.1'
-    implementation 'nz.ac.waikato.cms.weka:weka-stable:3.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
@@ -56,5 +55,24 @@ dependencies {
     implementation "androidx.camera:camera-extensions:${camerax_version}"
 
     implementation group: 'com.google.guava', name: 'guava', version: 'r05'
+
+    // For Card view
+    implementation 'androidx.cardview:cardview:1.0.0'
+
+    // Pie chart and graph library
+    implementation 'com.github.blackfizz:eazegraph:1.2.5l@aar'
+    implementation 'com.nineoldandroids:library:2.4.0'
+
+    //line chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
+
+    //some java guava error required this :/
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+
+    //for the settings view
+    implementation 'androidx.preference:preference:1.2.0'
 
 }

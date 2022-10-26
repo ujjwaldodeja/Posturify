@@ -4,9 +4,12 @@ import android.content.ClipData;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.posturfiy.recognition.PoseClassifier;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,19 +34,11 @@ import com.google.mlkit.vision.pose.PoseDetector;
 import com.google.mlkit.vision.pose.PoseLandmark;
 import com.google.mlkit.vision.pose.accurate.AccuratePoseDetectorOptions;
 
+import org.eazegraph.lib.charts.PieChart;
+import org.eazegraph.lib.models.PieModel;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import weka.classifiers.Classifier;
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.Evaluation;
-import weka.classifiers.trees.RandomTree;
-import weka.core.Attribute;
-import weka.core.Debug;
-import weka.core.DenseInstance;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.SerializationHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private static final PointF3D AXES_WEIGHTS = PointF3D.from(1, 1, 0.2f);
     private static final String POSE_SAMPLES_FILE = ".csv";
     private PoseClassifier poseClassifier;
-    private Classifier classifier;
+    //private Classifier classifier;
 
 
 
@@ -68,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        View root = binding.getRoot();
+        setContentView(root);
 
         setSupportActionBar(binding.appBarMain.toolbar);
 
@@ -84,20 +80,19 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-
-        InputStream data = null;
-        try {
-            data = getAssets().open("jfoureight.model");
-            classifier = (Classifier) SerializationHelper.read(data);
-            System.out.println("Model is trained");
-            //checkInstance();
-//            collectedData = new Instances("TestInstances",readings.getAttributeList() , 1);
-//            collectedData.setClassIndex(collectedData.numAttributes()-1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        InputStream data = null;
+//        try {
+//            data = getAssets().open("jfoureight.model");
+//            //classifier = (Classifier) SerializationHelper.read(data);
+//            System.out.println("Model is trained");
+//            //checkInstance();
+////            collectedData = new Instances("TestInstances",readings.getAttributeList() , 1);
+////            collectedData.setClassIndex(collectedData.numAttributes()-1);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
 
     }
@@ -150,14 +145,8 @@ public class MainActivity extends AppCompatActivity {
 
             PoseLandmark leftShoulder = pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER);
             PoseLandmark rightShoulder = pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER);
-            PoseLandmark leftElbow = pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW);
-            PoseLandmark rightElbow = pose.getPoseLandmark(PoseLandmark.RIGHT_ELBOW);
-            PoseLandmark leftWrist = pose.getPoseLandmark(PoseLandmark.LEFT_WRIST);
-            PoseLandmark rightWrist = pose.getPoseLandmark(PoseLandmark.RIGHT_WRIST);
             PoseLandmark leftHip = pose.getPoseLandmark(PoseLandmark.LEFT_HIP);
             PoseLandmark rightHip = pose.getPoseLandmark(PoseLandmark.RIGHT_HIP);
-            PoseLandmark leftKnee = pose.getPoseLandmark(PoseLandmark.LEFT_KNEE);
-            PoseLandmark rightKnee = pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE);
 
         } else {
             System.out.println("Image was not read");
@@ -177,7 +166,5 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-
-
 
 }

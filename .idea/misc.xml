@@ -3,7 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.14838129496402877" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.191" />
+        <entry key="app/src/main/res/drawable/ic_baseline_add.xml" value="0.2475" />
+        <entry key="app/src/main/res/drawable/ic_baseline_edit.xml" value="0.2475" />
         <entry key="app/src/main/res/drawable/ic_baseline_settings.xml" value="0.231" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2085" />
         <entry key="app/src/main/res/drawable/ic_menu_camera.xml" value="0.191" />
@@ -17,9 +20,9 @@
         <entry key="app/src/main/res/layout/fragment_gallery.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.22729492187500003" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.25052083333333336" />
-        <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.1005162556966146" />
+        <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.21042226155598961" />
         <entry key="app/src/main/res/layout/fragment_slideshow.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/layout/fragment_statistics.xml" value="0.25052083333333336" />
+        <entry key="app/src/main/res/layout/fragment_statistics.xml" value="0.2851643880208334" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.25052083333333336" />
         <entry key="app/src/main/res/menu/activity_main_drawer.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/menu/main.xml" value="0.25052083333333336" />
