@@ -29,7 +29,7 @@
             android:textStyle="bold"
             android:layout_gravity="end"/>
     </FrameLayout>
-    
+
     <ListView
         android:id="@+id/placeListView"
         android:layout_width="match_parent"
