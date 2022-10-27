@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.posturfiy.R;
 import com.example.posturfiy.databinding.FragmentMapBinding;
+import com.example.posturfiy.ui.database.SQLiteManager;
 import com.example.posturfiy.ui.database.place.Place;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -300,6 +301,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                             latLng.latitude + "",
                                             latLng.longitude + "");
                                     Place.arrayList.add(newPlace);
+                                    SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(getContext());
+                                    sqLiteManager.addPlaceToDatabase(newPlace);
                                     AlertDialog dialog = new AlertDialog
                                             .Builder(getContext())
                                             .setTitle("Place has been successfully saved!")
