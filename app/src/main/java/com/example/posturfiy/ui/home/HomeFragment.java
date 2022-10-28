@@ -10,21 +10,32 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.posturfiy.ui.home.Attributes;
+import com.example.posturfiy.R;
 import com.example.posturfiy.databinding.FragmentHomeBinding;
+import com.example.posturfiy.ui.database.SQLiteManager;
+import com.example.posturfiy.ui.database.place.Place;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.pose.Pose;
+import com.google.mlkit.vision.pose.PoseDetection;
+import com.google.mlkit.vision.pose.PoseDetector;
+import com.google.mlkit.vision.pose.PoseLandmark;
+import com.google.mlkit.vision.pose.accurate.AccuratePoseDetectorOptions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,24 +49,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.mlkit.vision.common.InputImage;
-import com.google.mlkit.vision.pose.Pose;
-import com.google.mlkit.vision.pose.PoseDetection;
-import com.google.mlkit.vision.pose.PoseDetector;
-import com.google.mlkit.vision.pose.PoseLandmark;
-import com.google.mlkit.vision.pose.accurate.AccuratePoseDetectorOptions;
 
 import weka.classifiers.Classifier;
 import weka.core.DenseInstance;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private static final int CAPTURE_IMAGE = 0;
     private FragmentHomeBinding binding;
@@ -64,7 +64,10 @@ public class HomeFragment extends Fragment {
     private String PATH;
     private List<String> picturesTaken = new ArrayList<>();
 
-    Classifier classifier;
+    private Spinner spinner;
+    private static String nameChosenByUser;
+
+    private Classifier classifier;
     private Instances collectedData;
     private Attributes readings = new Attributes();
     private HashMap<String, Integer> recordedAcitivities = new HashMap<>();
@@ -76,6 +79,25 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(getContext());
+        sqLiteManager.populatePlaceListArray();
+        sqLiteManager.populateRecordListArray();
+
+        ArrayAdapter<String> adapter = null;
+
+        spinner = (Spinner) root.findViewById(R.id.spinner);
+        if (Place.getPlacesNames().size() == 0) {
+            adapter = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_list_item_1);
+        } else {
+            adapter = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_list_item_1,
+                    Place.getPlacesNames());
+        }
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
         //imageView = (ImageView) root.findViewById(R.id.my_avatar_imageview);
         File storageDir = Environment.getExternalStorageDirectory();
         PATH = storageDir.getAbsolutePath() + "/DCIM/Camera/";
@@ -264,45 +286,59 @@ public class HomeFragment extends Fragment {
             for (int i = 0; i < collectedData.size(); i++) {
                 double result = classifier.classifyInstance(collectedData.instance(i));
                 String activity = readings.getClasses().get(new Double (result).intValue());
-                if (recordedAcitivities.containsKey(activity)) {
-                    int count = recordedAcitivities.get(activity);
-                    recordedAcitivities.remove(activity);
-                    recordedAcitivities.put(activity, count + 1);
-                } else {
-                    recordedAcitivities.put(activity, 1);
-                }
+
+                System.out.println(activity);
+//                if (recordedAcitivities.containsKey(activity)) {
+//                    int count = recordedAcitivities.get(activity);
+//                    recordedAcitivities.remove(activity);
+//                    recordedAcitivities.put(activity, count + 1);
+//                } else {
+//                    recordedAcitivities.put(activity, 1);
+//                }
             }
-            showResults();
+//            showResults();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void showResults() {
-        int max = 0;
-        String act = "";
-        for (String key : recordedAcitivities.keySet()) {
-            int value = recordedAcitivities.get(key);
-            if (value > max) {
-                max = value;
-                act = key;
-            }
-        }
-        int straight = 0, right = 0, left = 0;
-        if (recordedAcitivities.containsKey("straight")) {
-            straight = recordedAcitivities.get("straight");
-        }
-        if (recordedAcitivities.containsKey("right")) {
-            right = recordedAcitivities.get("right");
-        }
-        if (recordedAcitivities.containsKey("left")) {
-            left = recordedAcitivities.get("left");
-        }
-        System.out.println(recordedAcitivities.toString());
-        recordedAcitivities = new HashMap<>();
-    }
+//    public void showResults() {
+//        int max = 0;
+//        String act = "";
+//        for (String key : recordedAcitivities.keySet()) {
+//            int value = recordedAcitivities.get(key);
+//            if (value > max) {
+//                max = value;
+//                act = key;
+//            }
+//        }
+//        int straight = 0, right = 0, left = 0;
+//        if (recordedAcitivities.containsKey("straight")) {
+//            straight = recordedAcitivities.get("straight");
+//        }
+//        if (recordedAcitivities.containsKey("right")) {
+//            right = recordedAcitivities.get("right");
+//        }
+//        if (recordedAcitivities.containsKey("left")) {
+//            left = recordedAcitivities.get("left");
+//        }
+//        System.out.println(straight);
+//        System.out.println(recordedAcitivities.toString());
+//
+//    }
 
     public String getRecordedAcitivities() {
         return recordedAcitivities.toString();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        nameChosenByUser = spinner.getSelectedItem().toString();
+        System.out.println(nameChosenByUser + "====================================");
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }

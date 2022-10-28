@@ -52,7 +52,7 @@ public class StatisticsFragment extends Fragment {
         binding = null;
     }
     private void setData(){
-        tvGood.setText(Integer.toString(33));
+        tvGood.setText(Integer.toString(33)); //1 , 2 ,3
         tvNormal.setText(Integer.toString(43));
         tvBad.setText(Integer.toString(24));
     }

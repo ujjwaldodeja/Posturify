@@ -2,6 +2,7 @@ package com.example.posturfiy.ui.database.place;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Place {
 
@@ -36,6 +37,14 @@ public class Place {
             }
         }
         return false;
+    }
+
+    public static List<String> getPlacesNames() {
+        List<String> list = new ArrayList<>();
+        for (Place p : arrayList) {
+            list.add(p.getName());
+        }
+        return list;
     }
 
     public static void removeById(int id) {
