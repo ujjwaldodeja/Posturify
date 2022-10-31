@@ -6,6 +6,9 @@ import android.graphics.BitmapFactory;
 
 import androidx.annotation.NonNull;
 
+import com.example.posturfiy.ui.database.SQLiteManager;
+import com.example.posturfiy.ui.database.place.Place;
+import com.example.posturfiy.ui.database.record.Record;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -20,6 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 
 import weka.classifiers.Classifier;
@@ -115,11 +120,21 @@ public class OurClassifier {
     public void evaluateData() {
         try {
             System.out.println("Starting evaluation");
-            for (int i = 0; i < collectedData.size(); i++) {
-                double result = classifier.classifyInstance(collectedData.instance(i));
+
+                double result = classifier.classifyInstance(collectedData.instance(0));
                 String activity = readings.getClasses().get(new Double (result).intValue());
+                int recordId = Place.getIdFromPlaceName(HomeFragment.placeChosen);
+                Record newRecord = new Record(
+                        Record.recordsList.size(),
+                        recordId,
+                        activity,
+                        new Timestamp(new Date().getTime()));
+                Record.recordsList.add(newRecord);
+                SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(mContext);
+                sqLiteManager.addRecordToDatabase(newRecord);
+                System.out.println("RECORD WAS SAVED================");
                 System.out.println(activity);
-            }
+                collectedData.remove(0);
         } catch (Exception e) {
             e.printStackTrace();
         }

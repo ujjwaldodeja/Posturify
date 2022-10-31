@@ -25,12 +25,13 @@ import java.util.List;
 
 public class StatisticsFragment extends Fragment {
     // Create the object of TextView and PieChart class
-    TextView tvStraight, tvLeft, tvRight;
+    TextView tvStraight, tvLeft, tvRight, name;
     PieChart pieChart;
 
     private int straight;
     private int left;
     private  int right;
+    private String placeName;
 
     private FragmentStatisticsBinding binding;
 
@@ -40,7 +41,7 @@ public class StatisticsFragment extends Fragment {
         binding = FragmentStatisticsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        String placeName = HomeFragment.nameChosenByUser;
+        placeName = HomeFragment.placeChosen;
         if (placeName == null) {
             placeName = "";
         }
@@ -83,6 +84,7 @@ public class StatisticsFragment extends Fragment {
         tvStraight = root.findViewById(R.id.straight);
         tvLeft = root.findViewById(R.id.left);
         tvRight = root.findViewById(R.id.right);
+        name = root.findViewById(R.id.loc_stat_name);
         pieChart = root.findViewById(R.id.piechart);
 
         setData();
@@ -100,9 +102,10 @@ public class StatisticsFragment extends Fragment {
         binding = null;
     }
     private void setData(){
-        tvStraight.setText(straight);
-        tvRight.setText(right);
-        tvLeft.setText(left);
+        tvStraight.setText(straight + "");
+        tvRight.setText(right + "");
+        tvLeft.setText(left + "");
+        name.setText(placeName);
     }
 
     private void addPieSlice(){

@@ -20,10 +20,11 @@
         <!--Text view to use of -->
         <!-- programming languages text-->
         <TextView
+            android:id="@+id/loc_stat_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Location 1"
+
             android:textSize="23sp"
             android:textStyle="bold"
             android:gravity="center"/>
@@ -200,7 +201,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text="Good posture"
+                    android:text="Straight"
                     android:textSize="18sp"/>
 
                 <!--Text view to display the (straight posture) -->
@@ -237,7 +238,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text="Normal posture"
+                    android:text="Right-curved posture"
                     android:textSize="18sp"/>
 
                 <!--Text view to display the percentage (right-curved posture)-->
@@ -274,7 +275,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text="Bad posture"
+                    android:text="Left-curved posture"
                     android:textSize="18sp"/>
 
                 <!--Text view to display the percentage (left-curved posture) -->

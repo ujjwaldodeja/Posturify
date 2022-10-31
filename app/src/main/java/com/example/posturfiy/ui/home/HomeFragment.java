@@ -21,16 +21,17 @@ import com.example.posturfiy.databinding.FragmentHomeBinding;
 import com.example.posturfiy.ui.database.SQLiteManager;
 import com.example.posturfiy.ui.database.place.Place;
 
-public class HomeFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class HomeFragment extends Fragment {
 
     private static final int CAPTURE_IMAGE = 0;
     private FragmentHomeBinding binding;
     private ImageView imageView;
     private Context mContext;
+    private boolean init = true;
 
 
     private Spinner spinner;
-    public static String nameChosenByUser;
+    public static String placeChosen;
 
 
 
@@ -41,12 +42,16 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        if (init) {
+            SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(getContext());
+            sqLiteManager.populatePlaceListArray();
+            sqLiteManager.populateRecordListArray();
+            init = false;
+        }
 
-        SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(getContext());
-        sqLiteManager.populatePlaceListArray();
-        sqLiteManager.populateRecordListArray();
 
         ArrayAdapter<String> adapter = null;
+        Button submit = binding.getRoot().findViewById(R.id.submit_button);
 
         spinner = (Spinner) root.findViewById(R.id.spinner);
         if (Place.getPlacesNames().size() == 0) {
@@ -60,13 +65,24 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        Button submit = binding.getRoot().findViewById(R.id.submit_button);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                submit.setVisibility(View.VISIBLE);
+                placeChosen = spinner.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         submit.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             binding.buttonStat.setVisibility(View.VISIBLE);
-            nameChosenByUser = spinner.getSelectedItem().toString();
-            System.out.println("=================== " + nameChosenByUser + " ===================");
+            System.out.println("=================== " + placeChosen + " ===================");
         }
     });
 
@@ -94,16 +110,5 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        nameChosenByUser = spinner.getSelectedItem().toString();
-        System.out.println(nameChosenByUser + "====================================");
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
     }
 }

@@ -11,7 +11,6 @@ public class DatabaseConstants {
     public static final String NAME_FIELD_PLACE = "name";
     public static final String LATITUDE_FIELD_PLACE = "latitude";
     public static final String LONGITUDE_FIELD_PLACE = "longitude";
-    public static final String DELETED_FIELD_PLACE = "deleted";
 
     public static final String ID_FIELD_RECORD = "rid";
     public static final String FOREIGN_ID_FIELD_RECORD = "foreign_pid";
@@ -32,7 +31,7 @@ public class DatabaseConstants {
             + RESULT_FIELD_RECORD + " TEXT, "
             + TIMESTAMP_FIELD_RECORD + " TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
             + "FOREIGN KEY(" + FOREIGN_ID_FIELD_RECORD + ") REFERENCES "
-            + TABLE_NAME_RECORD + "(" + ID_FIELD_PLACE + "))";
+            + TABLE_NAME_PLACE + "(" + ID_FIELD_PLACE + "))";
 
     public static final String DELETE_PLACE = "DELETE FROM "
             + TABLE_NAME_PLACE + " WHERE pid = ";
