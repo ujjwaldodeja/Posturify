@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.posturfiy.R;
 import com.example.posturfiy.databinding.FragmentStatisticsBinding;
-import com.example.posturfiy.ui.database.SQLiteManager;
 import com.example.posturfiy.ui.database.place.Place;
 import com.example.posturfiy.ui.database.record.Record;
 import com.example.posturfiy.ui.home.HomeFragment;
@@ -26,7 +25,7 @@ import java.util.List;
 
 public class StatisticsFragment extends Fragment {
     // Create the object of TextView and PieChart class
-    TextView tvGood, tvBad, tvNormal;
+    TextView tvStraight, tvLeft, tvRight;
     PieChart pieChart;
 
     private int straight;
@@ -81,9 +80,9 @@ public class StatisticsFragment extends Fragment {
 
         // Link those objects with their respective
         // id's that we have given in .XML file
-        tvGood = root.findViewById(R.id.Good);
-        tvBad = root.findViewById(R.id.Bad);
-        tvNormal = root.findViewById(R.id.Normal);
+        tvStraight = root.findViewById(R.id.straight);
+        tvLeft = root.findViewById(R.id.left);
+        tvRight = root.findViewById(R.id.right);
         pieChart = root.findViewById(R.id.piechart);
 
         setData();
@@ -101,9 +100,9 @@ public class StatisticsFragment extends Fragment {
         binding = null;
     }
     private void setData(){
-        tvGood.setText(Integer.toString(33)); //1 , 2 ,3
-        tvNormal.setText(Integer.toString(43));
-        tvBad.setText(Integer.toString(24));
+        tvStraight.setText(straight); //1 , 2 ,3
+        tvRight.setText(right);
+        tvLeft.setText(left);
     }
 
     private void addPieSlice(){
@@ -111,17 +110,17 @@ public class StatisticsFragment extends Fragment {
         pieChart.addPieSlice(
                 new PieModel(
                         "Good",
-                        Integer.parseInt(tvGood.getText().toString()),
+                        Integer.parseInt(tvStraight.getText().toString()),
                         Color.parseColor("#FFA726")));
         pieChart.addPieSlice(
                 new PieModel(
                         "Normal",
-                        Integer.parseInt(tvNormal.getText().toString()),
+                        Integer.parseInt(tvRight.getText().toString()),
                         Color.parseColor("#66BB6A")));
         pieChart.addPieSlice(
                 new PieModel(
                         "Bad",
-                        Integer.parseInt(tvBad.getText().toString()),
+                        Integer.parseInt(tvLeft.getText().toString()),
                         Color.parseColor("#EF5350")));
     }
 }

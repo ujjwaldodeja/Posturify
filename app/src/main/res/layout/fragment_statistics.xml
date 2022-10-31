@@ -203,9 +203,9 @@
                     android:text="Good posture"
                     android:textSize="18sp"/>
 
-                <!--Text view to display the -->
+                <!--Text view to display the (straight posture) -->
                 <TextView
-                    android:id="@+id/Good"
+                    android:id="@+id/straight"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -240,10 +240,10 @@
                     android:text="Normal posture"
                     android:textSize="18sp"/>
 
-                <!--Text view to display the percentage -->
+                <!--Text view to display the percentage (right-curved posture)-->
 
                 <TextView
-                    android:id="@+id/Normal"
+                    android:id="@+id/right"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -277,9 +277,9 @@
                     android:text="Bad posture"
                     android:textSize="18sp"/>
 
-                <!--Text view to display the percentage -->
+                <!--Text view to display the percentage (left-curved posture) -->
                 <TextView
-                    android:id="@+id/Bad"
+                    android:id="@+id/left"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
