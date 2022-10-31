@@ -1,7 +1,6 @@
 package com.example.posturfiy.ui.database.place;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Place {
@@ -37,6 +36,15 @@ public class Place {
             }
         }
         return false;
+    }
+
+    public static int getIdFromPlaceName(String name) {
+        for (Place p : arrayList)  {
+            if (p.getName().equals(name)) {
+                return p.getId();
+            }
+        }
+        return -1;
     }
 
     public static List<String> getPlacesNames() {

@@ -23,13 +23,20 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class CameraActivity extends AppCompatActivity {
     private ImageAnalysis imageAnalysis;
     private ImageCapture imageCapture;
     private Button button;
+    private List<String> picturesTaken = new ArrayList<>();
+    private Context context;
+    private String PATH;
+    private OurClassifier classifier;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +44,9 @@ public class CameraActivity extends AppCompatActivity {
         setContentView(R.layout.activity_camera);
         startCamera();
         button = findViewById(R.id.buttonMap);
+        context = this.getApplicationContext();
+        PATH =  context.getExternalCacheDir() + "/";
+        classifier = new OurClassifier(context, PATH);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,10 +83,11 @@ public class CameraActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "IMG_" + timeStamp + "_";// mContext.getExternalCacheDir();
-        Context context = this.getApplicationContext();
-        File image = new File(context.getExternalCacheDir() + "/" + imageFileName +".jpg");
+
+        File image = new File(PATH + imageFileName +".jpg");
         // Save a file: path for use with ACTION_VIEW intents
         String ImagePath = image.getAbsolutePath();
+
         System.out.println(ImagePath);
         return image;
     }
@@ -94,13 +105,18 @@ public class CameraActivity extends AppCompatActivity {
             ImageCapture.OutputFileOptions outputFileOptions =
                     new ImageCapture.OutputFileOptions.Builder(file).build();
             System.out.println("builder ready");
+            File finalFile = file;
             imageCapture.takePicture(outputFileOptions, ContextCompat.getMainExecutor(this),
                     new ImageCapture.OnImageSavedCallback() {
                         @Override
                         public void onImageSaved(ImageCapture.OutputFileResults outputFileResults) {
                             // insert your code here.
                             System.out.println("Fuck this shit");
+                            picturesTaken.add(finalFile.getName());
+                            System.out.println("Trying to classify file:" + finalFile.getName());
+                            classifier.classify(finalFile.getName());
                             System.out.println(outputFileResults.toString());
+
                         }
 
                         @Override

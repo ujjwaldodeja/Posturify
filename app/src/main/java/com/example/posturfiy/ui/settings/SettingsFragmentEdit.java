@@ -8,17 +8,12 @@ import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import com.example.posturfiy.R;
 import com.example.posturfiy.ui.Map.MapController;
-import com.example.posturfiy.ui.database.place.Place;
 import com.example.posturfiy.ui.database.SQLiteManager;
-import com.google.android.gms.maps.MapFragment;
+import com.example.posturfiy.ui.database.place.Place;
 import com.google.android.gms.maps.model.LatLng;
-
-import java.util.Date;
-import java.util.Map;
 
 public class SettingsFragmentEdit extends AppCompatActivity {
 

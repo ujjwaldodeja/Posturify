@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 
 import com.example.posturfiy.R;
 import com.example.posturfiy.ui.Map.MapController;
-import com.example.posturfiy.ui.Map.MapFragment;
 
 import java.util.List;
 

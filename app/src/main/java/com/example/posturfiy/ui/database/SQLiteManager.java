@@ -10,8 +10,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.posturfiy.ui.database.place.Place;
 import com.example.posturfiy.ui.database.record.Record;
 
-import java.sql.Connection;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
