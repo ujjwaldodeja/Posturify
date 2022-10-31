@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
     private List<String> picturesTaken = new ArrayList<>();
 
     private Spinner spinner;
-    private static String nameChosenByUser;
+    public static String nameChosenByUser;
 
     private Classifier classifier;
     private Instances collectedData;
