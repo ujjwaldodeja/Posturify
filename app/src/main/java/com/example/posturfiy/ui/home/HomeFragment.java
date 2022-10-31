@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
@@ -55,7 +56,7 @@ import weka.core.DenseInstance;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
 
-public class HomeFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class HomeFragment extends Fragment {
 
     private static final int CAPTURE_IMAGE = 0;
     private FragmentHomeBinding binding;
@@ -97,6 +98,27 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        Button submit = binding.getRoot().findViewById(R.id.submit_button);
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.buttonStat.setVisibility(View.VISIBLE);
+                nameChosenByUser = spinner.getSelectedItem().toString();
+                System.out.println("=================== " + nameChosenByUser + " ===================");
+            }
+        });
 
         //imageView = (ImageView) root.findViewById(R.id.my_avatar_imageview);
         File storageDir = Environment.getExternalStorageDirectory();
@@ -134,10 +156,6 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
     }
 
 
-    public void takePhoto(){
-        Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(takePicture, CAPTURE_IMAGE);
-    }
 
     @Override
     public void onDestroyView() {
@@ -331,14 +349,4 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         return recordedAcitivities.toString();
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        nameChosenByUser = spinner.getSelectedItem().toString();
-        System.out.println(nameChosenByUser + "====================================");
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
 }

@@ -100,7 +100,7 @@ public class StatisticsFragment extends Fragment {
         binding = null;
     }
     private void setData(){
-        tvStraight.setText(straight); //1 , 2 ,3
+        tvStraight.setText(straight);
         tvRight.setText(right);
         tvLeft.setText(left);
     }
@@ -109,17 +109,17 @@ public class StatisticsFragment extends Fragment {
         // Set the data and color to the pie chart
         pieChart.addPieSlice(
                 new PieModel(
-                        "Good",
+                        "Straight",
                         Integer.parseInt(tvStraight.getText().toString()),
                         Color.parseColor("#FFA726")));
         pieChart.addPieSlice(
                 new PieModel(
-                        "Normal",
+                        "Right",
                         Integer.parseInt(tvRight.getText().toString()),
                         Color.parseColor("#66BB6A")));
         pieChart.addPieSlice(
                 new PieModel(
-                        "Bad",
+                        "Left",
                         Integer.parseInt(tvLeft.getText().toString()),
                         Color.parseColor("#EF5350")));
     }
