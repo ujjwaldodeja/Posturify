@@ -15,18 +15,34 @@ import com.example.posturfiy.databinding.FragmentStatisticsBinding;
 import com.example.posturfiy.ui.database.place.Place;
 import com.example.posturfiy.ui.database.record.Record;
 import com.example.posturfiy.ui.home.HomeFragment;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 public class StatisticsFragment extends Fragment {
     // Create the object of TextView and PieChart class
     TextView tvStraight, tvLeft, tvRight, name;
     PieChart pieChart;
+
+    private LineChart lineChart;
+    private LineData lineData;
+    private LineDataSet lineDataSet;
+    private ArrayList entries;
 
     private int straight;
     private int left;
@@ -92,6 +108,12 @@ public class StatisticsFragment extends Fragment {
         // To animate the pie chart
         //pieChart.startAnimation();
 
+        lineChart = root.findViewById(R.id.activity_main_linechart);
+        configureLineChart();
+        getEntriesLeft();
+        configureLeft();
+        lineChart.animateXY(2000, 2000);
+
         return root;
 
     }
@@ -125,5 +147,51 @@ public class StatisticsFragment extends Fragment {
                         "Left",
                         Integer.parseInt(tvLeft.getText().toString()),
                         Color.parseColor("#EF5350")));
+    }
+
+    private void configureLineChart() {
+        Description desc = new Description();
+        desc.setText("Your poses over time");
+        desc.setTextColor(Color.WHITE);
+        desc.setTextSize(14);
+        lineChart.setDescription(desc);
+        //lineChart.setBackgroundColor(Color.rgb(134, 187, 252));
+        lineChart.setTouchEnabled(false);
+        lineChart.setDragEnabled(false);
+        lineChart.setScaleEnabled(false);
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE);
+        xAxis.setTextSize(10f);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setValueFormatter(new ValueFormatter() {
+            private final SimpleDateFormat mFormat = new SimpleDateFormat("dd MM", Locale.ENGLISH);
+
+            @Override
+            public String getFormattedValue(float value) {
+                long millis = (long) value * 1000L;
+                return mFormat.format(new Date(millis));
+            }
+        });
+    }
+    private void configureLeft(){
+        lineDataSet = new LineDataSet(entries, "");
+        lineData = new LineData(lineDataSet);
+        lineChart.setData(lineData);
+        lineDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        lineDataSet.setValueTextColor(Color.WHITE);
+        lineDataSet.setDrawHorizontalHighlightIndicator(false);
+        lineDataSet.setValueTextSize(20);
+    }
+    private void getEntriesLeft() {
+        entries = new ArrayList<>();
+        entries.add(new Entry(1f, 9f));
+        entries.add(new Entry(2f, 16f));
+        entries.add(new Entry(3f, 12f));
+        entries.add(new Entry(4f, 21f));
+        entries.add(new Entry(5f, 24f));
+        entries.add(new Entry(6f, 18f));
+        entries.add(new Entry(7f, 10f));
     }
 }
