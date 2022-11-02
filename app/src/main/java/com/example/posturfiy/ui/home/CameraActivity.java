@@ -36,6 +36,9 @@ public class CameraActivity extends AppCompatActivity {
     private Context context;
     private String PATH;
     private OurClassifier classifier;
+    private Button buttonRecord;
+    private Button stopCapturing;
+    public static boolean exit;
 
 
     @Override
@@ -44,6 +47,8 @@ public class CameraActivity extends AppCompatActivity {
         setContentView(R.layout.activity_camera);
         startCamera();
         button = findViewById(R.id.buttonMap);
+        buttonRecord = findViewById(R.id.buttonStream);
+        stopCapturing = findViewById(R.id.but_stop_capturing);
         context = this.getApplicationContext();
         PATH =  context.getExternalCacheDir() + "/";
         classifier = new OurClassifier(context, PATH);
@@ -54,6 +59,39 @@ public class CameraActivity extends AppCompatActivity {
                 takePhoto();
             }
         });
+
+        buttonRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while(!exit) {
+                            System.out.println("THREAD STARTED!!!!!!!!!!!!!!!!");
+                            takePhoto();
+                            try {
+                                Thread.sleep(3000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+                exit = false;
+                t.start();
+                System.out.println("RECORDING STARTED");
+                // recording = n
+//                startRecording();
+            }
+        });
+
+        stopCapturing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stop();
+            }
+        });
+
     }
 
     public void startCamera() {
@@ -92,7 +130,7 @@ public class CameraActivity extends AppCompatActivity {
         return image;
     }
 
-    public void takePhoto(){
+    public boolean takePhoto(){
         ImageCapture copy = imageCapture;
         File file = null;
         try {
@@ -128,6 +166,7 @@ public class CameraActivity extends AppCompatActivity {
                     }
             );
         }
+        return true;
     }
 
     private void bindImageAnalysis(@NonNull ProcessCameraProvider cameraProvider) {
@@ -153,4 +192,8 @@ public class CameraActivity extends AppCompatActivity {
                 imageCapture);
     }
 
+    public static void stop() {
+        System.out.println("THREAD STOPPED!!!!!!!!!!!!!!!!!!!!!!!");
+        exit = true;
+    }
 }

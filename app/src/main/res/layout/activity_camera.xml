@@ -14,10 +14,35 @@
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.101"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.191"/>
+
+    <Button
+        android:id="@+id/buttonStream"
+        android:layout_width="165dp"
+        android:layout_height="140dp"
+        android:text="Start Capturing"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.934"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.191"/>
+
+    <Button
+        android:id="@+id/but_stop_capturing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop capturing"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.05">
-    </Button>
+        app:layout_constraintVertical_bias="0.7"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
