@@ -149,6 +149,8 @@ public class StatisticsFragment extends Fragment {
         leftPerc = Double.parseDouble(new DecimalFormat("0.00").format(left / (1.0 * sum))) * 100;
         rightPerc = Double.parseDouble(new DecimalFormat("0.00").format(right / (1.0 * sum))) * 100;
 
+        System.out.println(straightPerc + " s   " + leftPerc + " l    " + rightPerc + " r     ");
+
         decrease();
     }
 

@@ -94,7 +94,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:paddingLeft="10dp"
-                                android:text="Straight posture" />
+                                android:text="Curved to the right" />
 
                         </LinearLayout>
 
@@ -115,7 +115,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:paddingLeft="10dp"
-                                android:text="Curved to the right" />
+                                android:text="Straight posture" />
 
                         </LinearLayout>
 
