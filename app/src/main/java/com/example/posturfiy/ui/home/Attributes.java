@@ -6,8 +6,10 @@ import java.util.List;
 import weka.core.Attribute;
 
 public class Attributes {
-    public final Attribute LEFT_DIFF = new Attribute("left_diff");
-    public final Attribute RIGHT_DIFF = new Attribute("right_diff");
+//    public final Attribute LEFT_DIFF = new Attribute("left_diff");
+//    public final Attribute RIGHT_DIFF = new Attribute("right_diff");
+    public final Attribute LEFT_DIFF = new Attribute("left_avg");
+    public final Attribute RIGHT_DIFF = new Attribute("right_avg");
     public final Attribute VERT_DIFF = new Attribute("vert_diff");
     private final List<String> classes = new ArrayList<String>() {
         {

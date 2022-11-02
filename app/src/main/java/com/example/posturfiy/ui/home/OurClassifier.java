@@ -45,7 +45,7 @@ public class OurClassifier {
         this.PATH = PATH;
         InputStream data = null;
         try {
-            data = mContext.getAssets().open("bayesmodel92.model");
+            data = mContext.getAssets().open("v2LMT-90 (N=52).model");
             classifier = (Classifier) SerializationHelper.read(data);
             System.out.println("Model is trained");
             //checkInstance();

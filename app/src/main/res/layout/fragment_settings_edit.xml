@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/darkGray"
-        android:minHeight="?actionBarSize"
-        android:theme="?actionBarTheme">
+        android:background="@color/darkGray">
 
         <TextView
             android:id="@+id/text_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="DETAILS:"
+            android:text="DETAILS"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -27,65 +25,80 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="SAVE:"
+            android:text="SAVE"
             android:textColor="@color/white"
             android:textSize="15dp"
             android:textStyle="bold" />
 
-    </androidx.appcompat.widget.Toolbar>
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Location name:"
-        android:textColor="@color/darkGray"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
-
-    <EditText
-        android:id="@+id/nameEditText"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textColor="@color/darkGray"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:maxLines="1"
-        android:layout_marginTop="20dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Address:"
-        android:textColor="@color/darkGray"
-        android:textSize="20sp"
+    </FrameLayout>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/linechart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
-        android:textStyle="bold"/>
+        android:layout_marginRight="20dp"
+        android:elevation="10dp"
+        app:cardCornerRadius="10dp">
+        <TextView
+            android:text="Location name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:textColor="@color/darkGray"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
 
-    <EditText
-        android:id="@+id/coordinatesEditText"
-        android:layout_width="300dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:textColor="@color/darkGray"
-        android:hint="Post Code, Address, City, Country"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:maxLines="4"
-        android:layout_marginTop="20dp"/>
+        <EditText
+            android:id="@+id/nameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/darkGray"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:textAlignment="center"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/deleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="DELETE:"
-        android:layout_marginTop="20dp"
-        android:textColor="@color/red"
-        android:background="@color/white"
-        android:textSize="15dp"
-        android:textStyle="bold" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Address"
+            android:layout_marginTop="110dp"
+            android:gravity="center"
+            android:textColor="@color/darkGray"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/coordinatesEditText"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:textColor="@color/darkGray"
+            android:hint="  Post Code, Address, City, Country"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:maxLines="4"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="DELETE"
+            android:layout_marginTop="110dp"
+            android:textColor="@color/red"
+            android:background="@color/white"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

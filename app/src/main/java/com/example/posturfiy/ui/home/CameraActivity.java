@@ -63,6 +63,7 @@ public class CameraActivity extends AppCompatActivity {
         buttonRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stopCapturing.setVisibility(View.VISIBLE);
                 Thread t = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -89,6 +90,7 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 stop();
+                stopCapturing.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -97,7 +99,7 @@ public class CameraActivity extends AppCompatActivity {
     public void startCamera() {
         ListenableFuture<ProcessCameraProvider> provider = ProcessCameraProvider.getInstance(this);
         imageAnalysis =
-                new ImageAnalysis.Builder().setTargetResolution(new Size(1280, 720))
+                new ImageAnalysis.Builder().setTargetResolution(new Size(480, 360))
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).build();
         provider.addListener(new Runnable() {
             @Override

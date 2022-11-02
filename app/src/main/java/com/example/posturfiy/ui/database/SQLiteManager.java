@@ -15,13 +15,14 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 public class SQLiteManager extends SQLiteOpenHelper {
 
     private static SQLiteManager sqLiteManagers;
 
     @SuppressLint("SimpleDateFormat")
-    private static final DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     public SQLiteManager(Context context) {
         super(context, DatabaseConstants.DATABASE_NAME, null, DatabaseConstants.DATABASE_VERSION);
