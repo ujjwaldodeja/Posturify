@@ -6,44 +6,49 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.CameraActivity">
 
+    <androidx.camera.view.PreviewView
+        android:id="@+id/viewFinder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <Button
         android:id="@+id/buttonMap"
-        android:layout_width="165dp"
-        android:layout_height="140dp"
+        android:layout_width="96dp"
+        android:layout_height="89dp"
         android:text="Take photo"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.101"
+        app:layout_constraintHorizontal_bias="0.177"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.191"/>
+        app:layout_constraintVertical_bias="0.719" />
 
     <Button
         android:id="@+id/buttonStream"
-        android:layout_width="165dp"
-        android:layout_height="140dp"
+        android:layout_width="90dp"
+        android:layout_height="86dp"
         android:text="Start Capturing"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.934"
+        app:layout_constraintHorizontal_bias="0.825"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.191"/>
+        app:layout_constraintVertical_bias="0.716" />
 
     <Button
-        android:id="@+id/but_stop_capturing"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/buttonStop"
+        android:layout_width="87dp"
+        android:layout_height="80dp"
         android:text="Stop capturing"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.825"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.7"/>
+        app:layout_constraintVertical_bias="0.957" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

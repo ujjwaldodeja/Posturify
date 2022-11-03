@@ -14,7 +14,9 @@ import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.ImageProxy;
+import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 
 import com.example.posturfiy.R;
@@ -39,6 +41,8 @@ public class CameraActivity extends AppCompatActivity {
     private Button buttonRecord;
     private Button stopCapturing;
     public static boolean exit;
+    private PreviewView previewView;
+    private Thread t;
 
 
     @Override
@@ -48,7 +52,8 @@ public class CameraActivity extends AppCompatActivity {
         startCamera();
         button = findViewById(R.id.buttonMap);
         buttonRecord = findViewById(R.id.buttonStream);
-        stopCapturing = findViewById(R.id.but_stop_capturing);
+        stopCapturing = findViewById(R.id.buttonStop);
+        previewView = findViewById(R.id.viewFinder);
         context = this.getApplicationContext();
         PATH =  context.getExternalCacheDir() + "/";
         classifier = new OurClassifier(context, PATH);
@@ -64,7 +69,7 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 stopCapturing.setVisibility(View.VISIBLE);
-                Thread t = new Thread(new Runnable() {
+                t = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         while(!exit) {
@@ -132,7 +137,7 @@ public class CameraActivity extends AppCompatActivity {
         return image;
     }
 
-    public boolean takePhoto(){
+    public synchronized boolean takePhoto(){
         ImageCapture copy = imageCapture;
         File file = null;
         try {
@@ -154,6 +159,7 @@ public class CameraActivity extends AppCompatActivity {
                             System.out.println("Fuck this shit");
                             picturesTaken.add(finalFile.getName());
                             System.out.println("Trying to classify file:" + finalFile.getName());
+
                             classifier.classify(finalFile.getName());
                             System.out.println(outputFileResults.toString());
 
@@ -185,13 +191,13 @@ public class CameraActivity extends AppCompatActivity {
             }
         };
         orientationEventListener.enable();
-        // Preview preview = new Preview.Builder().build();
+        Preview preview = new Preview.Builder().build();
         CameraSelector cameraSelector = new CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_FRONT).build();
-        // previewView.setScaleType(PreviewView.ScaleType.FILL_START);
-        // preview.setSurfaceProvider(previewView.getSurfaceProvider());     //shows the preview of the camera for taking the image
+         previewView.setScaleType(PreviewView.ScaleType.FILL_START);
+         preview.setSurfaceProvider(previewView.getSurfaceProvider());     //shows the preview of the camera for taking the image
         cameraProvider.bindToLifecycle(this, cameraSelector,
-                imageCapture);
+                imageCapture, preview);
     }
 
     public static void stop() {

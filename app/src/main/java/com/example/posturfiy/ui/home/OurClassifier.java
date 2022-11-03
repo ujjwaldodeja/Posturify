@@ -58,7 +58,7 @@ public class OurClassifier {
         }
     }
 
-    public void classify(String name) {
+    public synchronized void classify(String name) {
         AccuratePoseDetectorOptions options =
                 new AccuratePoseDetectorOptions.Builder()
                         .setDetectorMode(AccuratePoseDetectorOptions.SINGLE_IMAGE_MODE)
@@ -123,15 +123,17 @@ public class OurClassifier {
 
                 double result = classifier.classifyInstance(collectedData.instance(0));
                 String activity = readings.getClasses().get(new Double (result).intValue());
-                int recordId = Place.getIdFromPlaceName(HomeFragment.placeChosen);
-                Record newRecord = new Record(
-                        Record.recordsList.size(),
-                        recordId,
-                        activity,
-                        new Timestamp(new Date().getTime()));
-                Record.recordsList.add(newRecord);
-                SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(mContext);
-                sqLiteManager.addRecordToDatabase(newRecord);
+                if (HomeFragment.placeChosen != null) {
+                    int recordId = Place.getIdFromPlaceName(HomeFragment.placeChosen);
+                    Record newRecord = new Record(
+                            Record.recordsList.size(),
+                            recordId,
+                            activity,
+                            new Timestamp(new Date().getTime()));
+                    Record.recordsList.add(newRecord);
+                    SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(mContext);
+                    sqLiteManager.addRecordToDatabase(newRecord);
+                }
                 System.out.println("RECORD WAS SAVED================");
                 System.out.println(activity);
                 collectedData.remove(0);
