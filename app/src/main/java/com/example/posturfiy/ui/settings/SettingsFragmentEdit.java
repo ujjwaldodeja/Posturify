@@ -13,6 +13,7 @@ import com.example.posturfiy.R;
 import com.example.posturfiy.ui.Map.MapController;
 import com.example.posturfiy.ui.database.SQLiteManager;
 import com.example.posturfiy.ui.database.place.Place;
+import com.example.posturfiy.ui.database.record.Record;
 import com.google.android.gms.maps.model.LatLng;
 
 public class SettingsFragmentEdit extends AppCompatActivity {
@@ -72,6 +73,7 @@ public class SettingsFragmentEdit extends AppCompatActivity {
                 SQLiteManager sqLiteManager = SQLiteManager.instanceOfDatabase(getApplicationContext());
                 sqLiteManager.deletePlaceFromDB(selectedPlace.getId());
                 Place.removeById(selectedPlace.getId());
+                Record.recordsList.removeIf(r -> r.getForeign_id() == selectedPlace.getId());
                 finish();
             }
         });

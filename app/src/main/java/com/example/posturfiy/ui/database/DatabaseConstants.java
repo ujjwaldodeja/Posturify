@@ -30,11 +30,12 @@ public class DatabaseConstants {
             + FOREIGN_ID_FIELD_RECORD + " INT, "
             + RESULT_FIELD_RECORD + " TEXT, "
             + TIMESTAMP_FIELD_RECORD + " TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-            + "FOREIGN KEY(" + FOREIGN_ID_FIELD_RECORD + ") REFERENCES "
-            + TABLE_NAME_PLACE + "(" + ID_FIELD_PLACE + "))";
+            + "CONSTRAINT fk_place "
+            + "FOREIGN KEY(" + FOREIGN_ID_FIELD_RECORD +
+            ") REFERENCES " + TABLE_NAME_PLACE +
+            "(" + ID_FIELD_PLACE + ") ON DELETE CASCADE)";
 
     public static final String DELETE_PLACE = "DELETE FROM "
             + TABLE_NAME_PLACE + " WHERE pid = ";
-
 
 }
