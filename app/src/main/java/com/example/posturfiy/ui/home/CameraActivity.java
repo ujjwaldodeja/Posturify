@@ -1,6 +1,10 @@
 package com.example.posturfiy.ui.home;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Size;
 import android.view.OrientationEventListener;
@@ -17,6 +21,8 @@ import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.posturfiy.R;
@@ -40,9 +46,12 @@ public class CameraActivity extends AppCompatActivity {
     private OurClassifier classifier;
     private Button buttonRecord;
     private Button stopCapturing;
-    public static boolean exit;
+    private static boolean exit;
+    private Thread stopThread;
+    private static boolean stopPhoto;
     private PreviewView previewView;
-    private Thread t;
+    private static NotificationManagerCompat notificationManagerCompat;
+    private static Notification notification;
 
 
     @Override
@@ -61,7 +70,18 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 System.out.println("Picture taken");
-                takePhoto();
+                stopThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while(!stopPhoto) {
+                            System.out.println("PHOTO STARTED");
+                            takePhoto();
+                        }
+                    }
+                });
+                stopPhoto = false;
+                stopThread.setName("TAKE 1 PHOTO THREAD");
+                stopThread.start();
             }
         });
 
@@ -69,7 +89,7 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 stopCapturing.setVisibility(View.VISIBLE);
-                t = new Thread(new Runnable() {
+                Thread t = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         while(!exit) {
@@ -83,6 +103,7 @@ public class CameraActivity extends AppCompatActivity {
                         }
                     }
                 });
+                t.setName("TAKE MANY PHOTOS");
                 exit = false;
                 t.start();
                 System.out.println("RECORDING STARTED");
@@ -138,6 +159,7 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     public synchronized boolean takePhoto(){
+        System.out.println(Thread.currentThread().getName());
         ImageCapture copy = imageCapture;
         File file = null;
         try {
@@ -146,35 +168,78 @@ public class CameraActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println(Thread.currentThread().getName());
         if(file!=null) {
             ImageCapture.OutputFileOptions outputFileOptions =
                     new ImageCapture.OutputFileOptions.Builder(file).build();
             System.out.println("builder ready");
             File finalFile = file;
-            imageCapture.takePicture(outputFileOptions, ContextCompat.getMainExecutor(this),
-                    new ImageCapture.OnImageSavedCallback() {
-                        @Override
-                        public void onImageSaved(ImageCapture.OutputFileResults outputFileResults) {
-                            // insert your code here.
-                            System.out.println("Fuck this shit");
-                            picturesTaken.add(finalFile.getName());
-                            System.out.println("Trying to classify file:" + finalFile.getName());
-
-                            classifier.classify(finalFile.getName());
-                            System.out.println(outputFileResults.toString());
-
+            System.out.println(Thread.currentThread().getName() + "!!!!!!!!!!");
+            imageCapture.takePicture(
+                outputFileOptions,
+                ContextCompat.getMainExecutor(this),
+                new ImageCapture.OnImageSavedCallback() {
+                    @Override
+                    public void onImageSaved(ImageCapture.OutputFileResults outputFileResults) {
+                        // insert your code here.
+                        System.out.println(Thread.currentThread().getName() + "CHECK");
+                        Thread.currentThread().interrupt();
+                        System.out.println(Thread.currentThread().getName());
+                        System.out.println("Fuck this shit");
+                        picturesTaken.add(finalFile.getName());
+                        System.out.println("Trying to classify file:" + finalFile.getName());
+                        System.out.println(Thread.currentThread().getName());
+                        classifier.classify(finalFile.getName());
+                        System.out.println(Thread.currentThread().getName());
+                        System.out.println(outputFileResults.toString());
+                        String res = OurClassifier.activityGlobal;
+                        if (res != null) {
+                            switch (res) {
+                                case "left":
+                                    pushNotification("left");
+                                    break;
+                                case "right":
+                                    pushNotification("right");
+                                    break;
+                                default:
+                                    System.out.println("Either empty or incorrect string");
+                                    break;
+                            }
+                        } else {
+                                System.out.println("RESULT WAS NULL");
+                            }
                         }
 
-                        @Override
-                        public void onError(ImageCaptureException error) {
-                            // insert your code here.
-                            System.out.println("really fucked up");
-                            System.out.println(error);
-                        }
+                    @Override
+                    public void onError(ImageCaptureException error) {
+                        // insert your code here.
+                        System.out.println("really fucked up");
+                        System.out.println(error);
                     }
-            );
+                });
         }
         return true;
+    }
+
+    public void pushNotification(String message) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("mychannel", "My Channel", NotificationManager.IMPORTANCE_HIGH);
+            channel.setShowBadge(true);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+            NotificationCompat.Builder builder = new NotificationCompat
+                    .Builder(this, "mychannel")
+                    .setSmallIcon(R.drawable.posturify)
+                    .setContentTitle("Posturify Notification")
+                    .setContentText("Your posture is curved to the " + message + ". Please, change your posture.")
+                    .setDefaults(Notification.DEFAULT_SOUND)
+                    .setDefaults(Notification.DEFAULT_VIBRATE)
+                    .setPriority(Notification.PRIORITY_MAX);
+            notification = builder.setAutoCancel(true).build();
+            notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
+            notificationManagerCompat.notify(1, notification);
+        }
     }
 
     private void bindImageAnalysis(@NonNull ProcessCameraProvider cameraProvider) {
